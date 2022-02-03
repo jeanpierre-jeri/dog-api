@@ -6,7 +6,7 @@ const imageDiv = document.querySelector('#imageDiv')
 
 const API = 'https://dog.ceo/api/breed'
 
-// Razas de perro
+// Peticiones al API
 
 const getBreeds = async () => {
   const resp = await fetch(`${API}s/list/all`)
@@ -15,7 +15,13 @@ const getBreeds = async () => {
   return Object.keys(message)
 }
 
-// Enlaces con el alfabeto
+const getBreedPicture = async (breed) => {
+  const resp = await fetch(`${API}/${breed}/images/random`)
+  const { message } = await resp.json()
+
+  return message
+}
+// Función para crear botones con el alfabeto
 
 const alphabet = 'abcdefghijklmnopqrstuvwxyz'
 
@@ -36,20 +42,21 @@ const printAlphabetButtons = () => {
   })
 }
 
+// Creando botones del alfabeto luego de llamada al api
+
 getBreeds().then((breeds) => {
   printAlphabetButtons()
 })
 
-const getBreedPicture = async (breed) => {
-  const resp = await fetch(`${API}/${breed}/images/random`)
-  const { message } = await resp.json()
-
-  return message
-}
-
 // Event Listeners
 
 nav.addEventListener('click', (e) => {
+  if (e.target.nodeName !== 'BUTTON') {
+    return
+  }
+
+  // Añadiendo Lógica para filtrar por nombre
+
   if (nav.classList.value.includes('grid-cols-4')) {
     const letter = e.target.innerHTML
     getBreeds().then((breeds) => {
@@ -111,6 +118,8 @@ nav.addEventListener('click', (e) => {
     })
   }
 })
+
+// Botón para regresar a la primera pantalla
 
 btnRegresar.addEventListener('click', () => {
   printAlphabetButtons()
